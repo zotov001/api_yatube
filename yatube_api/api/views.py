@@ -3,13 +3,7 @@ from django.shortcuts import get_object_or_404
 
 from posts.models import Comment, Group, Post
 from api.serializers import CommentSerializer, GroupSerializer, PostSerializer
-
-
-class UserIsAuthor(permissions.BasePermission):
-    message = 'У вас недостаточно прав для совершения действия'
-
-    def has_object_permission(self, request, view, obj):
-        return bool(obj.author == request.user)
+from api.permissions import UserIsAuthor
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -26,12 +20,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         post = get_object_or_404(Post, id=self.kwargs.get('post_id'))
         serializer.save(author=self.request.user, post=post)
 
-    def perform_update(self, serializer):
-        super(CommentViewSet, self).perform_update(serializer)
-
-    def perform_destroy(self, serializer):
-        super(CommentViewSet, self).perform_destroy(serializer)
-
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet для работы с группами."""
@@ -47,9 +35,3 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
-    def perform_update(self, serializer):
-        super(PostViewSet, self).perform_update(serializer)
-
-    def perform_destroy(self, serializer):
-        super(PostViewSet, self).perform_destroy(serializer)
