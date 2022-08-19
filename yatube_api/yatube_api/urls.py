@@ -5,9 +5,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # импорт правил из приложения api
     path('', include('api.urls')),
-    path('api/v1/api-token-auth/', include('api.urls')),
 ]
 
 
